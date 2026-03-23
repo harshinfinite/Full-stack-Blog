@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
+}
+
+:root {
+  --background: #fafaf9; /* Light background */
+  --foreground: #1c1917; /* Dark text */
+  --primary: #f97316; /* Little orange */
+  --primary-hover: #ea580c;
+  --surface: #ffffff; /* Card backgrounds */
+  --border: #e7e5e4;
+}
+
+.dark {
+  --background: #0f172a; /* Dark background */
+  --foreground: #f8fafc; /* Light text */
+  --primary: #10b981; /* Dark greenish */
+  --primary-hover: #059669;
+  --surface: #1e293b;
+  --border: #334155;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
