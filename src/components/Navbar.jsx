@@ -7,11 +7,11 @@ export default function Navbar() {
 
   useEffect(() => {
     // Check initial theme from HTML class or default to light
-    if (document.documentElement.classList.contains("dark")) {
-      setTheme("dark");
-    } else {
-      setTheme("light");
-    }
+    const isDark = document.documentElement.classList.contains("dark");
+    // Use setTimeout to prevent React Compiler synchronous setState error
+    setTimeout(() => {
+      setTheme(isDark ? "dark" : "light");
+    }, 0);
   }, []);
 
   const toggleTheme = () => {
