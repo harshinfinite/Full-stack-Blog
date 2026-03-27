@@ -1,7 +1,52 @@
 "use client";
 import Link from "next/link";
+import { useReducer } from "react";
+import { signIn } from "next-auth/react";
+
+const initialState = {
+  email:"",
+  password:"",
+  error:"",
+  loading:false
+}
+
+function reducer(state,action){
+  switch(action.type){
+    case "SET_FIELD":
+      return{...state,[action.field]:action.value}
+    case "SET_ERROR":
+      return {...state,error:action.value}
+    case "SET_LOADING":
+      return {...state,loading:action.value}
+    default:
+      return state
+  }
+};
 
 export default function Login() {
+
+  const [state, dispatch] = useReducer(reducer,initialState);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    dispatch({type:"SET_ERROR",value:""})
+    dispatch({type:"SET_LOADING",value:true})
+
+    const result = await signIn("credentials",{
+      email: state.email,
+      password:state.password,
+      redirect: false
+    });
+
+    if (result?.error){
+      dispatch({type:"SET_ERROR",value:"Invalid Email or Password"})
+      dispatch({type:"SET_LOADING",value:false})
+      return
+    };
+
+    window.location.href='/';
+  }
+
   return (
     <div className="flex min-h-[80vh] flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
@@ -18,7 +63,7 @@ export default function Login() {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-surface py-8 px-4 shadow sm:rounded-2xl sm:px-10 border border-border">
-          <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-foreground">
                 Email address
@@ -32,6 +77,8 @@ export default function Login() {
                   required
                   className="appearance-none block w-full px-3 py-3 border border-border rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm bg-background transition-colors"
                   placeholder="you@example.com"
+                  value={state.email}
+                  onChange={(e) => dispatch({type:"SET_FIELD",field:"email",value:e.target.value})}
                 />
               </div>
             </div>
@@ -49,6 +96,8 @@ export default function Login() {
                   required
                   className="appearance-none block w-full px-3 py-3 border border-border rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm bg-background transition-colors"
                   placeholder="••••••••"
+                  value={state.password}
+                  onChange={(e) => dispatch({type:"SET_FIELD",field:"password",value:e.target.value})}
                 />
               </div>
             </div>
@@ -76,9 +125,10 @@ export default function Login() {
             <div>
               <button
                 type="submit"
+                disabled={state.loading}
                 className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-hover hover:shadow-md hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-200"
               >
-                Sign in
+                {state.loading ? "Logging in..." : "Login"}
               </button>
             </div>
           </form>
