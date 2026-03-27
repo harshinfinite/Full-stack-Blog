@@ -4,20 +4,20 @@ import { useReducer } from "react";
 import { signIn } from "next-auth/react";
 
 const initialState = {
-  email:"",
-  password:"",
-  error:"",
-  loading:false
+  email: "",
+  password: "",
+  error: "",
+  loading: false
 }
 
-function reducer(state,action){
-  switch(action.type){
+function reducer(state, action) {
+  switch (action.type) {
     case "SET_FIELD":
-      return{...state,[action.field]:action.value}
+      return { ...state, [action.field]: action.value }
     case "SET_ERROR":
-      return {...state,error:action.value}
+      return { ...state, error: action.value }
     case "SET_LOADING":
-      return {...state,loading:action.value}
+      return { ...state, loading: action.value }
     default:
       return state
   }
@@ -25,26 +25,26 @@ function reducer(state,action){
 
 export default function Login() {
 
-  const [state, dispatch] = useReducer(reducer,initialState);
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    dispatch({type:"SET_ERROR",value:""})
-    dispatch({type:"SET_LOADING",value:true})
+    dispatch({ type: "SET_ERROR", value: "" })
+    dispatch({ type: "SET_LOADING", value: true })
 
-    const result = await signIn("credentials",{
+    const result = await signIn("credentials", {
       email: state.email,
-      password:state.password,
+      password: state.password,
       redirect: false
     });
 
-    if (result?.error){
-      dispatch({type:"SET_ERROR",value:"Invalid Email or Password"})
-      dispatch({type:"SET_LOADING",value:false})
+    if (result?.error) {
+      dispatch({ type: "SET_ERROR", value: "Invalid Email or Password" })
+      dispatch({ type: "SET_LOADING", value: false })
       return
     };
 
-    window.location.href='/';
+    window.location.href = '/';
   }
 
   return (
@@ -78,7 +78,7 @@ export default function Login() {
                   className="appearance-none block w-full px-3 py-3 border border-border rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm bg-background transition-colors"
                   placeholder="you@example.com"
                   value={state.email}
-                  onChange={(e) => dispatch({type:"SET_FIELD",field:"email",value:e.target.value})}
+                  onChange={(e) => dispatch({ type: "SET_FIELD", field: "email", value: e.target.value })}
                 />
               </div>
             </div>
@@ -97,7 +97,7 @@ export default function Login() {
                   className="appearance-none block w-full px-3 py-3 border border-border rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm bg-background transition-colors"
                   placeholder="••••••••"
                   value={state.password}
-                  onChange={(e) => dispatch({type:"SET_FIELD",field:"password",value:e.target.value})}
+                  onChange={(e) => dispatch({ type: "SET_FIELD", field: "password", value: e.target.value })}
                 />
               </div>
             </div>
@@ -123,6 +123,9 @@ export default function Login() {
             </div>
 
             <div>
+              {state.error && (
+                <p className="text-red-500 text-sm text-center mb-2">{state.error}</p>
+              )}
               <button
                 type="submit"
                 disabled={state.loading}
