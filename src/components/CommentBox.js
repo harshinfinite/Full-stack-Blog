@@ -40,7 +40,7 @@ const CommentBox = ({postId}) => {
             />
             <div className="flex-1 bg-surface border border-border rounded-xl flex flex-col focus-within:ring-2 focus-within:ring-primary focus-within:border-primary transition-all overflow-hidden">
                 <textarea
-                    className="w-full p-4 bg-transparent outline-none resize-none min-h-[100px] text-sm"
+                    className="w-full p-4 bg-transparent outline-none resize-none min-h-25 text-sm"
                     placeholder="What are your thoughts?" 
                     onChange={(e) => setTextContent(e.target.value)}
                     value={textContent}

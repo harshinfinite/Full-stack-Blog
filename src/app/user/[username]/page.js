@@ -102,7 +102,7 @@ export default function UserProfile() {
                 />
               </Link>
               
-              <div className="flex flex-col flex-grow p-6">
+              <div className="flex flex-col grow p-6">
                 <div className="text-xs opacity-60 flex items-center justify-between mb-3">
                   <span>{post.date}</span>
                   <span>{post.readingTime}</span>
@@ -113,7 +113,7 @@ export default function UserProfile() {
                     {post.title}
                   </h3>
                 </Link>
-                <p className="text-foreground opacity-70 text-sm line-clamp-3 mb-6 flex-grow">
+                <p className="text-foreground opacity-70 text-sm line-clamp-3 mb-6 grow">
                   {post.excerpt}
                 </p>
 

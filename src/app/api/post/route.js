@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(request){
     const session = await auth()
-    if(!session) return NextResponse.json({error : "not Authenticated"},{status:401})
+    if(!session) return NextResponse.json({error : "Not Authenticated"},{status:401})
     const {title,content,status} = await request.json();
 
     if (!title || !content)
