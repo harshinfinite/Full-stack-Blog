@@ -7,22 +7,18 @@ import PostManager from '@/components/PostManager';
 
 
 export default async function Dashboard() {
-    const session = await auth();
-    if (!session) {
-        redirect("/login")
-    }
-    const posts = await prisma.post.findMany({
-        where:{authorId: parseInt(session.user.id)},
-        orderBy: {createdAt : "desc"},
-        include: {_count:{select:{comments:true}}}
-    })
-    const user = await prisma.user.findUnique({
-      where: {id: parseInt(session.user.id)}
-    })
-
-    const handleDelete = (postId) => {
-      confirm.alert("Sure to delete this Post")
-    }
+  const session = await auth();
+  if (!session) {
+    redirect("/login")
+  }
+  const posts = await prisma.post.findMany({
+    where: { authorId: parseInt(session.user.id) },
+    orderBy: { createdAt: "desc" },
+    include: { _count: { select: { comments: true } } }
+  })
+  const user = await prisma.user.findUnique({
+    where: { id: parseInt(session.user.id) }
+  })
 
   return (
     <div>
@@ -30,5 +26,10 @@ export default async function Dashboard() {
       <PostManager posts={posts} />
     </div>
   )
+
+
+
 }
+
+
 

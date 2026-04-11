@@ -14,6 +14,10 @@ export async function DELETE(request,{params}) {
     });
     if (post.authorId !== parseInt(session.user.id)) return NextResponse.json({ error: "Not Author" }, { status: 403 });
 
+    await prisma.comment.deleteMany({
+        where:{postId:id}
+    })
+
     await prisma.post.delete({
         where: { id }
     })
