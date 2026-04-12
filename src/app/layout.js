@@ -1,5 +1,6 @@
 import "./globals.css";
 import Navbar from "../components/Navbar";
+import  AuthSessionProvider  from "../components/SessionProvider"
 
 export const metadata = {
   title: "Next.js Blog Platform Mock",
@@ -15,10 +16,12 @@ export default function RootLayout({ children }) {
         <meta name="color-scheme" content="light dark" />
       </head>
       <body className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-300">
+        <AuthSessionProvider>
         <Navbar />
         <main className="grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {children}
         </main>
+        </AuthSessionProvider>
         <footer className="w-full bg-surface border-t border-border mt-auto py-6 transition-colors">
           <div className="max-w-7xl mx-auto px-4 text-center text-sm font-medium opacity-60 hover:opacity-100 transition-opacity">
             &copy; {new Date().getFullYear()} Blog Platform Mock. All UI rights reserved.

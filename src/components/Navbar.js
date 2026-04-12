@@ -1,9 +1,11 @@
 "use client";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { useSession, signOut } from "next-auth/react"
 
 export default function Navbar() {
   const [theme, setTheme] = useState("light");
+  const { data: session } = useSession()
 
   useEffect(() => {
     // Check initial theme from HTML class or default to light
@@ -34,18 +36,31 @@ export default function Navbar() {
             </Link>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/editor" className="text-sm font-medium hover:text-primary transition-colors">
-              Write
-            </Link>
-            <Link href="/login" className="text-sm font-medium hover:text-primary transition-colors">
-              Login
-            </Link>
-            <Link
-              href="/signup"
-              className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-full hover:bg-primary-hover transition-colors"
-            >
-              Sign Up
-            </Link>
+            {session ? (
+              <>
+                <Link href="/editor" className="text-sm font-medium hover:text-primary transition-colors">
+                  Write
+                </Link>
+                <Link href="/dashboard" className="text-sm font-medium hover:text-primary transition-colors">
+                  Dashboard
+                </Link>
+                <button onClick={() => signOut({ callbackUrl: "/" })}
+                  className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-full hover:bg-primary-hover transition-colors">Sign Out</button>
+              </>
+            ) : (
+              <>
+                <Link href="/login" className="text-sm font-medium hover:text-primary transition-colors">
+                  Login
+                </Link>
+                <Link
+                  href="/signup"
+                  className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-full hover:bg-primary-hover transition-colors"
+                >
+                  Sign Up
+                </Link>
+              </>
+            )
+            }
             <button
               onClick={toggleTheme}
               className="ml-2 w-10 h-10 rounded-full bg-border flex items-center justify-center hover:bg-opacity-80 transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
