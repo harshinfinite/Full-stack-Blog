@@ -35,7 +35,7 @@ const PostManager = ({ posts }) => {
                     {/* Comment count — post._count.comments */}
                     <div>{post._count.comments}</div>
                     {/* Edit button → Link to /editor/{post.id} */}
-                    <Link href={`/editor/${post.id}`}></Link>
+                    <Link href={`/editor/${post.id}`}>Edit Post</Link>
                     {/* Delete button → onClick={() => handleDelete(post.id)} */}
                     <button onClick={() => handleDelete(post.id)}>Delete</button>
                 </div>

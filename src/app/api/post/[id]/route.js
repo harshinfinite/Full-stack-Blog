@@ -25,3 +25,20 @@ export async function DELETE(request,{params}) {
     return NextResponse.json({success:true},{status: 200})
 
 }
+export async function PATCH(request,{params}){
+    const session = await auth();
+    if (!session) return NextResponse.json({error:"Not Authenticated"},{status:401})
+    const {id:rawId} = await params;
+    const id = parseInt(rawId)
+    const {title,content,status} = await request.json()
+    const post = await prisma.post.findUnique({
+        where:{id}
+    })
+    if(!post) return NextResponse.json({error:"Not Found"},{status:404});
+    if (post.authorId !== parseInt(session.user.id)) return NextResponse.json({error:"Not Author"},{status:403});
+    const updatedPost = await prisma.post.update({
+        where:{id},
+        data:({title,content,status})
+    });
+    return NextResponse.json(updatedPost,{status:200})
+}
