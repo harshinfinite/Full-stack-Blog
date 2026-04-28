@@ -1,76 +1,24 @@
-import Link from "next/link";
-import Image from "next/image";
-import prisma from "@/lib/prisma";
-import Like from "@/components/Like";
-import { auth } from "@/auth";
-import SearchingBar from "@/components/SearchingBar";
+import prisma from "@/lib/prisma"
+import Link from "next/link"
 
 
-
-export default async function Dashboard() {
-
-  const session = await auth();
-
-  
-  const [posts, userLikes] = await Promise.all([
-    prisma.post.findMany({
-
-      where: { status: "PUBLISHED" },
-      orderBy: { createdAt: "desc" },
-      include: {
-        _count: { select: { likes: true } },
-        author: true
-      }
-    }),
-
-    session ? prisma.like.findMany({
-      where: {
-        userId: parseInt(session.user.id)
-      }
-    }) : Promise.resolve([])
-
-  ])
-
-
-
-
-  return (
-    <div className="space-y-12">
-      {/* Hero Section */}
-      <section className="text-center py-16 px-4 bg-surface rounded-3xl shadow-sm border border-border">
-        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 hidden md:block">
-          Welcome to the <span className="text-transparent bg-clip-text bg-linear-to-r from-primary to-primary-hover">Future of Blogging</span>
-        </h1>
-        <h1 className="text-4xl font-extrabold tracking-tight mb-4 md:hidden">
-          Welcome to the Future
-        </h1>
-        <p className="text-xl text-foreground opacity-70 max-w-2xl mx-auto mb-8">
-          Discover stories, thinking, and expertise from writers on any topic. A modern, minimalist approach to reading.
-        </p>
-        <Link
-          href="/editor"
-          className="inline-flex items-center justify-center px-8 py-3.5 text-base font-semibold text-white bg-primary rounded-full hover:bg-primary-hover hover:scale-105 transition-all shadow-lg hover:shadow-primary/30"
-        >
-          Start Writing Today
-        </Link>
-      </section>
-
-      {/* Posts Section */}
-      <section>
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-bold">Trending Stories</h2>
-          <div className="flex gap-2">
-            <button className="px-4 py-2 text-sm font-medium border border-border rounded-full hover:bg-border transition-colors">
-              Latest
-            </button>
-            <button className="px-4 py-2 text-sm font-medium border border-primary text-primary rounded-full bg-primary/10 transition-colors">
-              Trending
-            </button>
-          </div>
-        </div>
-        <SearchingBar />
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+export default async function SearchPage({searchParams}) {
+    const {q} = await searchParams
+    const posts = await prisma.post.findMany({
+        where:{
+            status:"PUBLISHED",
+            OR:[
+                {title:{contains:q,mode:"insensitive"}},
+                {content:{contains:q,mode:"insensitive"}}
+            ]
+        },
+        include:{author:true}
+    })
+    return(
+        <>
+        <h2>Results for : {q}</h2>
+        {posts.length===0 && <p>NO results found</p>}
+         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {posts.map((post) => {
             const readingTime = Math.ceil(post.content.split(" ").length / 200) + " min read"
             return (
@@ -117,7 +65,6 @@ export default async function Dashboard() {
                   <div className="flex items-center justify-between mt-auto pt-4 border-t border-border">
                     <div className="flex items-center gap-4 text-sm opacity-60">
 
-                      <Like postId={post.id} initialCount={post._count.likes} initialLiked={userLikes.some(like => like.postId === post.id)} />
 
 
                       <Link href={`/post/${post.id}#comments`} className="flex items-center gap-1.5 hover:text-primary transition-colors group/btn">
@@ -138,7 +85,6 @@ export default async function Dashboard() {
             )
           })}
         </div>
-      </section>
-    </div>
-  );
+        </>
+    )
 }
