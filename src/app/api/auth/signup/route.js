@@ -5,15 +5,26 @@ import bcrypt from "bcryptjs"
 
 export async function POST(request) {
     const body = await request.json();
-    const {name ,email , password } = body;
+    const {name ,email , password , username} = body;
 
-    const existingUser = await prisma.user.findUnique({
-        where: {email}
-    });
+    const [existingUser,existUsername] = await Promise.all([
+        prisma.user.findUnique({
+            where:{email}
+        }),
+        prisma.user.findUnique({
+            where:{username}
+        })
+    ]);
 
     if (existingUser){
         return NextResponse.json(
             {error:"Email already exists"},
+            {status:400}
+        );
+    };
+    if (existUsername){
+        return NextResponse.json(
+            {error:"Username already taken"},
             {status:400}
         );
     };
@@ -24,6 +35,7 @@ export async function POST(request) {
         data: 
         {
             name,
+            username,
             email,
             password: hashedPassword
         }

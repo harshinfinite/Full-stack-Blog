@@ -4,6 +4,7 @@ import { useReducer } from "react";
 
 const initialState = {
   name: "",
+  username:"",
   email: "",
   password: "",
   confirmPassword: "",
@@ -45,6 +46,7 @@ export default function Signup() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: state.name,
+          username: state.username,
           email: state.email,
           password: state.password
         })
@@ -94,6 +96,25 @@ export default function Signup() {
                   placeholder="Jane Doe"
                   value={state.name}
                   onChange={(e) => dispatch({ type: "SET_FIELD", field: "name", value: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="username" className="block text-sm font-medium text-foreground">
+                Username
+              </label>
+              <div className="mt-1">
+                <input
+                  id="username"
+                  name="username"
+                  type="text"
+                  autoComplete="username"
+                  required
+                  className="appearance-none block w-full px-3 py-3 border border-border rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm bg-background transition-colors"
+                  placeholder="janedoe"
+                  value={state.username}
+                  onChange={(e) => dispatch({ type: "SET_FIELD", field: "username", value: e.target.value })}
                 />
               </div>
             </div>

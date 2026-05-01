@@ -42,7 +42,7 @@ export default async function SearchPage({searchParams}) {
                       className="w-10 h-10 rounded-full border border-border"
                     />
                     <div>
-                      <Link href={`/user/${post.author.name.toLowerCase().replace(' ', '')}`} className="text-sm font-semibold hover:text-primary transition-colors hover:underline">
+                      <Link href={`/user/${post.author.username}`} className="text-sm font-semibold hover:text-primary transition-colors hover:underline">
                         {post.author.name}
                       </Link>
                       <div className="text-xs opacity-60 flex items-center shadow-none gap-1">

@@ -7,22 +7,36 @@ import CommentBox from "@/components/CommentBox";
 
 
 export default async function SinglePostView({ params }) {
-  const {id: rawId} = await params
+  const { id: rawId } = await params
   const id = parseInt(rawId)
 
-  const post = await prisma.post.findUnique({
-    where: { id },
-    include: {
-      author: true,
-      comments: {
-        include: { user: true },
-        orderBy: { createdAt: 'desc' }
+  const session = await auth();
+
+  const [post, checkIfLikeExist] = await Promise.all([
+    prisma.post.findUnique({
+      where: { id },
+      include: {
+        _count: { select: { likes: true } },
+        author: true,
+        comments: {
+          include: { user: true },
+          orderBy: { createdAt: 'desc' }
+        }
       }
-    }
-  });
+    }),
+    prisma.like.findUnique({
+      where: {
+        userId_postId: {
+          userId: parseInt(session.user.id),
+          postId: id
+        }
+      }
+    })
+
+  ])
+
   if (!post) notFound();
 
-  const session = await auth();
   const isAuthor = session?.user?.id === String(post.authorId)
 
   const readingTime = Math.ceil(post.content.split(" ").length / 200) + 'min read'
@@ -48,7 +62,7 @@ export default async function SinglePostView({ params }) {
 
           <div className="flex flex-col sm:flex-row items-center justify-between border-y border-border py-4 gap-4">
             <div className="flex items-center gap-4">
-              <Link href={`/user/${post.author.name.replace('@', '')}`}>
+              <Link href={`/user/${post.author.username}`}>
                 <img
                   src={post.author.avatar}
                   alt={post.author.name}
@@ -56,10 +70,10 @@ export default async function SinglePostView({ params }) {
                 />
               </Link>
               <div className="text-left">
-                <Link href={`/user/${post.author.name.replace('@', '')}`} className="font-semibold block hover:text-primary transition-colors">
+                <Link href={`/user/${post.author.username}`} className="font-semibold block hover:text-primary transition-colors">
                   {post.author.name}
                 </Link>
-                <span className="text-sm opacity-60 block cursor-pointer">{post.author.name}</span>
+                <span className="text-sm opacity-60 block cursor-pointer">{post.author.username}</span>
               </div>
             </div>
 

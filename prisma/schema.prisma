@@ -22,6 +22,9 @@ model User {
   avatar    String?   @default("/default-avatar.png")
   bio       String?   @default("")
   likes     Like[]
+  followers Follow[]  @relation("followers")
+  following Follow[]  @relation("following")
+  username  String    @unique
 }
 
 model Post {
@@ -55,5 +58,16 @@ model Like {
   userId Int
   post   Post @relation(fields: [postId], references: [id])
   postId Int
-  @@unique([userId,postId])
+
+  @@unique([userId, postId])
+}
+
+model Follow {
+  id          Int  @id @default(autoincrement())
+  followerId  Int
+  followingId Int
+  follower    User @relation("following", fields: [followerId], references: [id])
+  following   User @relation("followers", fields: [followingId], references: [id])
+
+  @@unique([followerId, followingId])
 }
