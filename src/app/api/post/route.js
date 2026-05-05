@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 export async function POST(request){
     const session = await auth()
     if(!session) return NextResponse.json({error : "Not Authenticated"},{status:401})
-    const {title,content,status} = await request.json();
+    const {title,content,status,coverImage} = await request.json();
 
     if (!title || !content)
         return NextResponse.json({error: "Title and Content required"},{status: 400});
@@ -15,6 +15,7 @@ export async function POST(request){
         data : {
             title,
             content,
+            coverImage,
             status: status || "DRAFT",
             author : {connect:{id : parseInt(session.user.id)}}
         }

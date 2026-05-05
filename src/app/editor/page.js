@@ -1,6 +1,6 @@
 "use client"
 import Link from "next/link";
-import { useState } from "react";
+import { useState,useRef } from "react";
 import { useRouter } from "next/navigation";
 
 
@@ -8,10 +8,12 @@ export default function Editor() {
 
   const router = useRouter();
 
+  const fileInputRef = useRef(null);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [status, setStatus] = useState('DRAFT');
   const [loading, setLoading] = useState(false);
+  const [coverImage, setCoverImage] = useState(null);
 
   async function handleSubmit() {
     setLoading(true);
@@ -19,7 +21,7 @@ export default function Editor() {
       const response = await fetch('/api/post', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, content, status })
+        body: JSON.stringify({ title, content, status , coverImage })
       });
 
       if (!response.ok) {
@@ -35,6 +37,21 @@ export default function Editor() {
     }
 
   }
+
+  async function handleFileUpload(e) {
+    const file =  e.target.files[0]
+    const formData = new FormData()
+    formData.append('file',file)
+    const response = await fetch("/api/upload",{
+      method:'POST',
+      body: formData
+    })
+    const url = await response.json()
+    setCoverImage(url)
+  }
+
+  
+
 
   return (
     <div className="max-w-5xl mx-auto h-[calc(100vh-140px)] flex flex-col">
@@ -135,7 +152,9 @@ export default function Editor() {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-1 opacity-80">Cover Image</label>
-                <div className="w-full h-32 border-2 border-dashed border-border rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-primary/5 transition-all text-sm opacity-60 hover:opacity-100 group">
+                <div className="w-full h-32 border-2 border-dashed border-border rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-primary/5 transition-all text-sm opacity-60 hover:opacity-100 group"
+                  onClick={() => fileInputRef.current.click()}>
+                  <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleFileUpload}/>
                   <svg className="w-6 h-6 mb-2 group-hover:text-primary group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                   </svg>
