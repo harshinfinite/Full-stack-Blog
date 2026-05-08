@@ -2,7 +2,7 @@ import { auth } from "@/auth";
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
-export async function DELETE(request,{params}) {
+export async function DELETE({params}) {
     const session = await auth();
     if (!session) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 

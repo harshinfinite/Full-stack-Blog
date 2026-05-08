@@ -1,10 +1,14 @@
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import { auth } from "@/auth";
+import ProfileHeader from "@/components/ProfileHeader";
 
 export default async function UserProfile({ params }) {
 
   const { username } = await params
+
+  const session = await auth()
 
   const user = await prisma.user.findUnique({
     where: {
@@ -16,53 +20,38 @@ export default async function UserProfile({ params }) {
           status: "PUBLISHED"
         },
         include: {
-          _count : {select:{likes:true,comments: true}}
+          _count: { select: { likes: true, comments: true } }
         }
       },
       _count: { select: { followers: true, following: true } }
     }
   })
+  if (!user) notFound();
 
-  if(!user) notFound();
+  let isFollowed = null;
+
+  if (session) {
+    isFollowed = await prisma.follow.findUnique({
+      where: {
+        followerId_followingId: {
+          followerId: parseInt(session.user.id),
+          followingId: user.id
+        }
+      }
+    })
+
+  }
+
+
+
+
+
+
 
   return (
     <div className="max-w-4xl mx-auto space-y-12 pb-12">
       {/* Profile Header */}
-      <section className="pt-8">
-        <div className="flex flex-col md:flex-row items-center md:items-start gap-8 border-b border-border pb-12">
-          <div className="relative">
-            <img
-              src={user.avatar}
-              alt={user.name}
-              className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-surface shadow-xl shadow-primary/10 object-cover"
-            />
-          </div>
-          <div className="flex-1 text-center md:text-left">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-              <div>
-                <h1 className="text-3xl font-extrabold tracking-tight">{user.name}</h1>
-                <p className="text-primary font-medium">{user.username}</p>
-              </div>
-              <button className="px-8 py-2.5 bg-foreground text-background font-semibold rounded-full hover:bg-primary hover:text-white transition-colors duration-300 shadow-sm mx-auto md:mx-0">
-                Follow
-              </button>
-            </div>
-
-            <p className="text-lg opacity-80 mb-6 leading-relaxed max-w-2xl">
-              {user.bio}
-            </p>
-
-            <div className="flex items-center justify-center md:justify-start gap-6 text-sm font-medium opacity-70">
-              <span className="flex items-center gap-2">
-                <span className="text-foreground text-base">{user._count.followers}</span> Followers
-              </span>
-              <span className="flex items-center gap-2">
-                <span className="text-foreground text-base">{user._count.following}</span> Following
-              </span>
-            </div>
-          </div>
-        </div>
-      </section>
+      <ProfileHeader username={username} user={user} initialIsFollowing={!!isFollowed} initialFollowersCount={user._count.followers}/>
 
       {/* User's Posts */}
       <section>
@@ -88,7 +77,7 @@ export default async function UserProfile({ params }) {
 
                 <div className="flex flex-col grow p-6">
                   <div className="text-xs opacity-60 flex items-center justify-between mb-3">
-                    <span>{new Date(post.createdAt).toLocaleDateString("en-US",{day:"numeric",month:"short",year:"numeric"})}</span>
+                    <span>{new Date(post.createdAt).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })}</span>
                     <span>{readTime} min read</span>
                   </div>
 
