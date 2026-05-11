@@ -42,6 +42,7 @@ export default function Editor() {
     const file =  e.target.files[0]
     const formData = new FormData()
     formData.append('file',file)
+    formData.append('type','cover')
     const response = await fetch("/api/upload",{
       method:'POST',
       body: formData
