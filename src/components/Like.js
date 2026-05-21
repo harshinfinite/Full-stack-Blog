@@ -20,7 +20,7 @@ const Like = ({postId , initialCount ,initialLiked}) => {
         };
         const response = await fetch(`/api/post/${postId}/like`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json" }
         })
         if(!response.ok) return;
         const data = await response.json();
