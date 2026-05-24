@@ -65,6 +65,9 @@ export default async function Dashboard() {
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-2xl font-bold">Trending Stories</h2>
           <div className="flex gap-2">
+            <Link href="/saved" className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-full hover:bg-primary-hover transition-colors">
+              Saved Posts
+            </Link>
             <button className="px-4 py-2 text-sm font-medium border border-border rounded-full hover:bg-border transition-colors">
               Latest
             </button>
