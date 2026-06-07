@@ -86,12 +86,6 @@ export default async function SinglePostView({ params }) {
                 <span className="text-sm font-medium">{0}</span>
               </button>
 
-              <Link href="#comments" className="p-2 border border-border rounded-full hover:bg-border transition-colors group">
-                <svg className="w-5 h-5 group-hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                </svg>
-              </Link>
-
               <div className="h-6 w-px bg-border hidden sm:block"></div>
 
               {isAuthor && (
@@ -179,7 +173,6 @@ export default async function SinglePostView({ params }) {
                     </svg>
                     {0}
                   </button>
-                  <button className="hover:text-foreground transition-colors">Reply</button>
                 </div>
               </div>
             </div>

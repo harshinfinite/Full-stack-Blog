@@ -153,6 +153,7 @@ export default function Login() {
                 <button
                   type="button"
                   className="w-full inline-flex justify-center py-3 px-4 border border-border rounded-lg shadow-sm bg-background text-sm font-medium text-foreground hover:bg-surface focus:outline-none transition-colors"
+                  onClick={() => signIn("google", { callbackUrl: "/" })}
                 >
                   <span className="sr-only">Sign in with Google</span>
                   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
@@ -176,6 +177,7 @@ export default function Login() {
                 <button
                   type="button"
                   className="w-full inline-flex justify-center py-3 px-4 border border-border rounded-lg shadow-sm bg-background text-sm font-medium text-foreground hover:bg-surface focus:outline-none transition-colors"
+                  onClick={() => signIn("github", { callbackUrl: "/" })}
                 >
                   <span className="sr-only">Sign in with GitHub</span>
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
